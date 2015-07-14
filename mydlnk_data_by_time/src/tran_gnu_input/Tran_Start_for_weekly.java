@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+//rgergrgregregerg
 public class Tran_Start_for_weekly {//將輸出分類，time(建立花費時間),durring(持續時間),data(傳輸量)
 	public static void main(String args[])throws IOException
 	{
