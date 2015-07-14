@@ -1,0 +1,99 @@
+package turn_logloginaccount;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+import turn_logloginaccount.Build_hash;
+
+
+public class Login_Mapper extends Mapper<Object, Text, Text, Text> {
+    public void map(Object key, Text value, Context context
+                    ) throws IOException, InterruptedException {
+//Dec 22 04:31:44 usrelay1 relay_server[3133]: [Legacy]   68.52.189.141,   68.52.189.141, 308536980,      1, Mon Dec 22 04:31:43 2014 , Mon Dec 22 04:31:44 2014 ,      1,          0
+//Dec 22 04:31:44 usrelay1 relay_server[3133]: [HTTP]   74.197.20.140,   74.197.20.140, 261396110, 261396111,      0, Mon Dec 22 04:31:15 2014 , Mon Dec 22 04:31:44 2014 ,     29,       1024           
+    	String inputStr = value.toString(); //(.+)\\[.+\\](.+)\\,(.+)\\,(.+)\\,\\s.+\\s(.+\\s.+)\\:.+\\:.+\\,(.+)\\,(.+)\\,(.+)
+    	String patternStr =	"(.+)\\[.+\\](.+)\\,(.+)\\,(.+)\\,\\s.+\\s(.+\\s.+)\\:.+\\:.+\\,(.+)\\,(.+)\\,(.+)";
+	   	Pattern pattern = Pattern.compile(patternStr);
+	   	Matcher matcher = pattern.matcher(inputStr);
+	   	Text wordK = new Text();
+	   	Text wordV = new Text();
+	   	String connecttime;
+	   	String duringtime;
+	   	String passdata;
+
+	   	boolean matchFound = matcher.find();
+	       if(matchFound==true) {
+	    	   System.out.println("m01=="+matcher.group(1).toString());
+	    	   System.out.println("m02=="+matcher.group(2).toString());
+	    	   System.out.println("m03=="+matcher.group(3).toString());
+	    	   System.out.println("m04=="+matcher.group(4).toString());
+	    	   System.out.println("m05=="+matcher.group(5).toString());
+	    	   System.out.println("m06=="+matcher.group(6).toString());
+	    	   System.out.println("m07=="+matcher.group(7).toString());
+	    	   System.out.println("m08=="+matcher.group(8).toString());
+	    	   Build_hash changehash = new Build_hash(matcher.group(2).toString(),matcher.group(3).toString()+matcher.group(6).toString());
+	       	
+	    	   String aa="fail";
+	    	   try {
+	    		   aa = changehash.exchange();
+	    		   } catch (Exception e) {
+	    			   e.printStackTrace();   
+	    		   }
+	    	   if(Integer.parseInt(matcher.group(4).toString().replaceAll(" ", ""))>2)//when connect time ">=3" let Counter to "B"  else to A
+	    		   connecttime="B";
+	    	   else
+	    		   connecttime="A";
+	    	   
+	    	   if(Integer.parseInt(matcher.group(7).toString().replaceAll(" ", ""))<60)//when during time "<1min" let Counter to "A"  ">6min" to C between 1~6min to B
+	    		   duringtime="A";
+	    	   else if(Integer.parseInt(matcher.group(7).toString().replaceAll(" ", ""))>360)
+	    		   duringtime="C";
+	    	   else
+	    		   duringtime="B";
+	    	   
+	    	   if((int)((Float.parseFloat(matcher.group(8).toString().replaceAll(" ", ""))/Float.parseFloat(matcher.group(7).toString().replaceAll(" ", "")))/1024.0)>99)//when connect time ">=3" let Counter to "1"  else to 0
+	    		   passdata="C";
+	    	   else if((int)((Float.parseFloat(matcher.group(8).toString().replaceAll(" ", ""))/Float.parseFloat(matcher.group(7).toString().replaceAll(" ", "")))/1024.0)<30)
+	    		   passdata="A";
+	    	   else
+	    		   passdata="B";
+	    	   
+	    	   wordK.set(aa);
+	    	   if(inputStr.indexOf("HTTP")!=-1){
+	    		   wordV.set("0"+"	"+matcher.group(5).toString().replaceAll(" ", "	")+"	"+matcher.group(4).toString().replaceAll(" ", "")+"	"+connecttime+"	"+matcher.group(7).toString().replaceAll(" ", "")+"	"+duringtime+"	"+matcher.group(8).toString().replaceAll(" ", "")+"	"+passdata);
+	    	   }else if(inputStr.indexOf("Legacy")!=-1){
+	    		   wordV.set("1"+"	"+matcher.group(5).toString().replaceAll(" ", "	")+"	"+matcher.group(4).toString().replaceAll(" ", "")+"	"+connecttime+"	"+matcher.group(7).toString().replaceAll(" ", "")+"	"+duringtime+"	"+matcher.group(8).toString().replaceAll(" ", "")+"	"+passdata);
+	    	   }
+	       	context.write(wordK, wordV);
+	      
+	   }else{
+	   	
+	   	System.out.println("error");
+	   }
+    	
+    	
+   	 /*
+   	  * 0001b07490c57c21432b9d77f5882a81	1	22 11	      1	     12	       5120
+		000219ec7c01c3da5181720e8e1ccb4a	1	22 12	      1	    318	      41984
+		000227677eb7144d4262b380c467fa51	1	22 06	      1	     36	    4078832
+		00023da954dd17914b7b41ff9b847841	1	22 11	      2	      8	      13312
+		0002cf75fa79c1450f1ced5d2ace2ace	1	22 05	      0	  10575	   10055680
+		00033e89bff79119b837a196dd733ca4	1	22 05	      2	     79	    4656640
+		000374dc2e75a81a6c02cdd78db42af4	0	22 16	      0	      7	       9216
+		000395517973d184a69f2667dbe43f8c	0	22 15	      0	     44	      13312
+		00039650ab30b33713bd8a42b7c51179	0	22 01	      0	    361	       1024
+   	  * 
+   	  * 
+   	  * 
+   	  * 
+   	  * 
+   	  * */
+
+
+       
+    }
+}

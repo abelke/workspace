@@ -1,0 +1,191 @@
+package fp_tree;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.commons.httpclient.HttpStatus;
+
+
+public class Fp_tree_mapper extends Mapper<Object, Text, Text, IntWritable> {
+	static String last_node = "root";
+	public static int hash(byte[] data, int seed) {
+		    int m = 0x5bd1e995;
+		    int r = 24;
+
+		    int h = seed ^ data.length;
+
+		    int len = data.length;
+		    int len_4 = len >> 2;
+
+		    for (int i = 0; i < len_4; i++) {
+		      int i_4 = i << 2;
+		      int k = data[i_4 + 3];
+		      k = k << 8;
+		      k = k | (data[i_4 + 2] & 0xff);
+		      k = k << 8;
+		      k = k | (data[i_4 + 1] & 0xff);
+		      k = k << 8;
+		      k = k | (data[i_4 + 0] & 0xff);
+		      k *= m;
+		      k ^= k >>> r;
+		      k *= m;
+		      h *= m;
+		      h ^= k;
+		    }
+
+		    int len_m = len_4 << 2;
+		    int left = len - len_m;
+
+		    if (left != 0) {
+		      if (left >= 3) {
+		        h ^= (int) data[len - 3] << 16;
+		      }
+		      if (left >= 2) {
+		        h ^= (int) data[len - 2] << 8;
+		      }
+		      if (left >= 1) {
+		        h ^= (int) data[len - 1];
+		      }
+
+		      h *= m;
+		    }
+
+		    h ^= h >>> 13;
+		    h *= m;
+		    h ^= h >>> 15;
+
+		    return h;
+		  }
+    public void map(Object key, Text value, Context context
+            ) throws IOException, InterruptedException {
+    /*	1001dd05	POST/m/index.php	68108
+    	10036991	POST/m/index.php	68108
+    	10041826	POST/login	5511
+    	10041826	GET/	4606
+    	10041826	GET/fpm_status	51
+    	10041826	GET/nginx_status	48
+    	10041826	GET/op_apc_stats.php	48
+    	10041826	GEThttps://us5.mydlink.com/fpm_ping	24
+    	100575f7	POST/signin/	266
+    	10058d31	POST/m/index.php	68108*/
+   	
+    	/*List<List<Integer>> aList = new ArrayList<List<Integer>>();
+    	 
+    	for(int i=0; i<10; i++) {
+    	  List<Integer> aListData = new ArrayList<Integer>();
+    	 
+    	  // add data 
+    	  aListData.add(1);
+    	  aListData.add(2);
+    	  // .....
+    	 
+    	  aList.add(aListData);
+    	}
+    	 
+    	// So it will print '1'.
+    	System.out.println(aList.get(0).get(0));*/
+    	
+    	
+    	
+    	 String inputStr = value.toString();
+    	 String patternStr = "(.+)\\s(.+)\\s(.+)";
+    	 Pattern pattern = Pattern.compile(patternStr);
+    	 Matcher matcher = pattern.matcher(inputStr);
+    	 String actiontarget = "";
+    	 String useos = "";
+    	 String outdata = "";
+    	 
+    	 Text wordK = new Text();
+    	 IntWritable wordV = new IntWritable(1);
+
+        
+    	 String id = matcher.group(1).toString();
+    	 String name = matcher.group(2).toString();
+    	 String all_times_data = matcher.group(3).toString();
+    	 
+    	 if(last_node == id){
+    		 
+    		 
+    	 }else{
+    		String s1 = id+last_node;
+         	String s2 = s1.replaceAll("\\D", "");
+        	int node_time = 1;
+         	byte[] bytes = null;
+         	try {
+         		if(s2.length()%2 !=0 )
+         			s2=s2+"0";
+         		bytes = Hex.decodeHex(s2.toCharArray());
+         		} catch (DecoderException e) {
+         			System.out.println("input hash error:"+s2.replaceAll("\\D", "")+" ");
+         			e.printStackTrace();
+         			}
+         	wordK.set(Integer.toHexString(hash(bytes, 2)));	
+    		 
+    		 
+    		 
+    		 
+    		 
+    		 outdata = id+"\t"+last_node+"\t"+Integer.toHexString(hash(bytes, 2));
+    		 
+    		 
+    		wordK.set(outdata);	
+         	wordV.set(node_time);
+         	context.write(wordK, wordV);
+         	last_node = Integer.toHexString(hash(bytes, 2));
+    	 }
+    	 
+        boolean matchFound = matcher.find();
+        if(matchFound==true) {
+        	
+        	
+        	
+        	int a = matcher.group(9).toString().indexOf("?");
+        	int b = matcher.group(9).toString().indexOf(" ");
+        	if(a>0){
+        		actiontarget = matcher.group(9).toString().substring(0, a);
+        	}else{
+        		actiontarget = matcher.group(9).toString().substring(0, b);
+        	}
+        	int c = matcher.group(12).toString().indexOf(" ");
+        	if(c>0){
+        		useos = matcher.group(12).toString().substring(0, c);
+        	}else{
+        		useos = matcher.group(12).toString();
+        	}
+        	
+        	String ssss =matcher.group(10).toString().replaceAll(" ", "");
+        	int i = Integer.parseInt(ssss);
+        	String ttt = HttpStatus.getStatusText(i);
+        	//System.out.println(i+"=="+ttt);
+        	outdata = matcher.group(1).toString()+"\t"+matcher.group(5).toString()+"\t"+matcher.group(4).toString()+"\t"+matcher.group(6).toString()+"\t"+matcher.group(7).toString()+"\t"+matcher.group(8).toString()+"\t"+actiontarget+"\t"+ttt+"\t"+useos;
+        	//outdata = matcher.group(1).toString()+" "+matcher.group(5).toString()+" "+matcher.group(4).toString()+" "+matcher.group(6).toString()+" "+matcher.group(7).toString()+" "+actiontarget+" "+matcher.group(9).toString()+" "+useos;
+        	
+        	//IP, moth, day, hour, action, target, result, os
+        	String s = matcher.group(1).toString().replaceAll("\\.", "")+matcher.group(6).toString()+matcher.group(4).toString();//create unique hash code use ip+day+hour
+        	String s2 = s.replaceAll("\\D", "");
+        	
+        	byte[] bytes = null;
+        	try {
+        		if(s2.length()%2 !=0 )
+        			s2=s2+"0";
+        		bytes = Hex.decodeHex(s2.toCharArray());
+        		} catch (DecoderException e) {
+        			System.out.println(s2.replaceAll("\\D", "")+" ");
+        			e.printStackTrace();
+        			}
+        	wordK.set(Integer.toHexString(hash(bytes, 2)));	
+        	wordV.set(outdata);
+        	context.write(wordK, wordV);
+       
+    }else{
+    	
+    	System.out.println("error");
+    }
+}}

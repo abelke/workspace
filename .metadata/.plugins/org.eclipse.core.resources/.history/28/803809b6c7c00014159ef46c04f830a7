@@ -1,0 +1,103 @@
+package tran_gnu_input;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.io.*;
+
+
+public class Tran_Start {
+	public static void main(String args[])throws IOException
+	{
+		Integer[][] output = new Integer[24][17];
+		Integer[][] output1 = new Integer[24][3];
+		Integer[][] output2 = new Integer[24][3];
+		Integer[][] output3 = new Integer[24][3];
+		Integer[][] outputZ = new Integer[24][3];
+		Integer[][] output4 = new Integer[24][4];
+		Integer[][] output5 = new Integer[24][5];
+		String selectday = "day";
+//		for(int i=0;i<=23;i++){
+//			output[i][0]=i;
+//			for(int j=1;j<17;j++){
+//				output[i][j]=0;
+//			}
+//		}
+		
+		for(int i=0;i<=23;i++){
+			output[i][0]=i;
+			output1[i][0]=i;
+			output2[i][0]=i;
+			output3[i][0]=i;
+			output4[i][0]=i;
+			outputZ[i][0]=i;
+			output5[i][0]=i;
+			for(int j=1;j<3;j++){
+				output[i][j]=0;
+				output1[i][j]=0;
+				output2[i][j]=0;
+				output3[i][j]=0;
+				outputZ[i][j]=0;
+			}
+		}
+
+//		FileReader FileStream=new FileReader("/home/hduser/Desktop/test/gnutest/input/timeout");
+//		FileReader FileStream2=new FileReader("/home/hduser/Desktop/test/gnutest/input/duringout");
+//		FileReader FileStream3=new FileReader("/home/hduser/Desktop/test/gnutest/input/dataout");
+		FileReader FileStream=new FileReader("/mnt/data/test/gpinput/timeout"); 
+		FileReader FileStream2=new FileReader("/mnt/data/test/gpinput/duringout");
+		FileReader FileStream3=new FileReader("/mnt/data/test/gpinput/dataout");
+
+		@SuppressWarnings("resource")
+		BufferedReader BufferedStream1=new BufferedReader(FileStream);
+		@SuppressWarnings("resource")
+		BufferedReader BufferedStream2=new BufferedReader(FileStream2);
+		@SuppressWarnings("resource")
+		BufferedReader BufferedStream3=new BufferedReader(FileStream3);
+        String data;
+		 String patternStr =".+\\-(.+)\\-(.+)\\t(.+)\\t(.+)\\t(.+)";
+		 Pattern pattern = Pattern.compile(patternStr);
+//////////////////////////////to find input data and find day to filter	   	
+//	        String folderPath = "/mnt/data/up/login_data_up";//資料夾路徑
+//	        StringBuffer fileList = new StringBuffer();
+//	        String file="55";
+//	            try{
+//	               java.io.File folder = new java.io.File(folderPath);
+//	               String[] list = folder.list();           
+//	                         for(int i = 0; i < list.length; i++){
+//	                             fileList.append(list[i]).append(", ");
+//	                             file=list[i];
+//	                        }
+//	                }catch(Exception e){
+//	                      System.out.println("'"+folderPath+"'此資料夾不存在");
+//	                } 
+//	                System.out.println(fileList);
+//	                System.out.println(file);
+	                
+//	       		 String filecut =".+\\_(\\d+)\\..+";
+//	    		 Pattern filetest = Pattern.compile(filecut);
+//	    		 Matcher filematcher = filetest.matcher(file);
+//	    		 boolean matchFound0 = filematcher.find();
+//	  	       if(matchFound0==true) {
+//	    		 //System.out.println(filematcher.group(1).toString().substring(6, 8));
+//	    		 selectday=filematcher.group(1).toString().substring(6, 8);
+//	  	       }else{
+//	  	    	 System.out.println("error1");
+//	  	    	System.out.println(file);
+//	  	       }
+////////////////////////////////////////
+		 do{ //loading timeout data and all connect data
+			 data=BufferedStream1.readLine();
+			 //System.out.println(data);
+			 if(data==null)
+				 break;          // 讀到檔案結束
+			 Matcher matcher = pattern.matcher(data);
+			 boolean matchFound = matcher.find();
+			 if(matchFound==true) {
+
+			 
+//			 if(matcher.group(1).endsWith(selectday)){//select day (22 only for test)
+				 
+				 if(matcher.group(3).equals("A") && matcher.group(4).equals("0")){
+					 output[Integer.valueOf(matcher.group(2).toString())][1]=Integer.valueOf(matcher.group(5).toString());
+					 output1[Integer.valueOf(matcher.group(2).toString())][1]=output1[Integer.valueOf(matcher.group(2).toString())][1]+Integer.valueOf(matcher.group(5).toString());
+				 }else if(matcher.group(3).equals("B") && matcher.group(4

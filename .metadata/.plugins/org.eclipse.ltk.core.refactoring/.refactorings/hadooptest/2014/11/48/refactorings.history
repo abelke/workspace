@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Cutstr.java&apos; to &apos;mydlnk_data_by_time/src/ddd_mining_ctype&apos;&#x0A;- Original project: &apos;hadooptest&apos;&#x0A;- Destination element: &apos;mydlnk_data_by_time/src/ddd_mining_ctype&apos;&#x0A;- Original element: &apos;mydlinkddd.Cutstr.java&apos;" description="Copy compilation unit" destination="=mydlnk_data_by_time/src&lt;ddd_mining_ctype" element1="/src&lt;mydlinkddd{Cutstr.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1416889198911" units="1" version="1.0"/>
+</session>

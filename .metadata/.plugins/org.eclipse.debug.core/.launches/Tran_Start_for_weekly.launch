@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/mydlnk_data_by_time/src/tran_gnu_input/Tran_Start_for_weekly.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="tran_gnu_input.Tran_Start_for_weekly"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="mydlnk_data_by_time"/>
+</launchConfiguration>

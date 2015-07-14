@@ -1,0 +1,90 @@
+package ddd_mining_connect_success;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+
+public class Ddd_connect_reducer extends Reducer<Text, Text, Text, Text> {
+ // private Text result = new Text();
+  private IntWritable result = new IntWritable();
+  public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+	  int localsum = 0;
+	  int relaysum = 0;
+	  int upnpsum = 0;
+	  int othersum = 0;
+	  Text wordV = new Text();
+	  System.out.println("----"+key+"----");  
+ 
+	  
+	  for (Text val : values) {
+String patternStr = "(.+)\\s(.+)";
+Pattern pattern = Pattern.compile(patternStr);
+			 //System.out.println("**"+val.toString());
+Matcher matcher = pattern.matcher(val.toString());
+
+boolean matchFound = matcher.find();
+if(matchFound==true) {
+		  if(matcher.group(1).toString().equals("Local")){
+			  localsum = localsum+Integer.valueOf(matcher.group(2).toString());
+		  }else if(matcher.group(1).toString().equals("UPnP")){
+			  upnpsum = upnpsum+Integer.valueOf(matcher.group(2).toString());
+		  }else if(matcher.group(1).toString().equals("Relay")){
+			  relaysum = relaysum+Integer.valueOf(matcher.group(2).toString());
+		  }else{
+			  othersum = othersum+Integer.valueOf(matcher.group(2).toString());
+		  }
+        }else{
+        	 System.out.println("error");
+        }
+}
+	  System.out.println(key);
+	  System.out.println(values.toString());
+	  System.out.println(localsum+"*"+upnpsum+"*"+relaysum+"*"+othersum);
+	  
+	  if(localsum>0){
+		  wordV.set("local	1	"+localsum);
+	  }else if(upnpsum>0){
+		  wordV.set("upnp	1	"+upnpsum);
+	  }else if(relaysum>0){
+		  wordV.set("relay	1	"+relaysum);
+	  }else if(othersum>0){
+		  wordV.set("unknown	1	"+localsum+"*"+upnpsum+"*"+relaysum+"*"+othersum);
+	  }else{
+		  wordV.set("unknown	0");
+	  }
+
+	  context.write(key, wordV);
+localsum = 0;
+ relaysum = 0;
+upnpsum = 0;
+ othersum = 0;
+	  
+	  /*IntWritable wordV = new IntWritable();
+	  
+        if(sum > 0){
+        	wordV.set(1);
+        	context.write(key, wordV);
+        }else{
+        	wordV.set(0);
+        	context.write(key, wordV);
+        }*/
+        
+    //int sum = 0; // initialize the sum for each keyword
+	 // if(value.toString().indexOf("status=1")!=-1){
+	/*  System.out.println(key);
+		  result.set("error");
+		  context.write(key, result); // create a pair <keyword, number of occurences>
+		  System.out.println("***************************");
+		  //context.write(key, value); // create a pair <keyword, number of occurences>
+		/*  }else{
+			  Text outstr= new Text();
+			  outstr.set("error");
+			  context.write(key, outstr); // create a pair <keyword, number of occurences>
+		  }*/
+    
+  }
+	}

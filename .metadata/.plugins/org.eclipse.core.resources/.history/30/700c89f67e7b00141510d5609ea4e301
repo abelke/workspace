@@ -1,0 +1,54 @@
+package ddd_mining_connect_success;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class Ddd_connect_mapper extends Mapper<Object, Text, Text, IntWritable> {
+    public void map(Object key, Text value, Context context
+                    ) throws IOException, InterruptedException {
+    	 //DateFormat df = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss");
+    	 String splitsym ="^";
+    	 String inputStr = value.toString();
+    	 
+    	// Cutstr g01 = new Cutstr(inputStr, "logtime=");
+    	 Cutstr g02 = new Cutstr(inputStr, "no=");
+    	 Cutstr g03 = new Cutstr(inputStr, "id=");
+    	// Cutstr g04 = new Cutstr(inputStr, "type=");
+    	 Cutstr g05 = new Cutstr(inputStr, "state=");
+    	 Cutstr g06 = new Cutstr(inputStr, "status=");
+    	 Cutstr g07 = new Cutstr(inputStr, "ctype=");
+    	// Cutstr g08 = new Cutstr(inputStr, "browser=");
+ 	 
+    	 
+    	 Build_hash changehash = new Build_hash(g02.exchange(splitsym).toString(),g03.exchange(splitsym).toString());
+    	 Text wordK = new Text();
+    	 Text wordV = new Text();
+    	 String outdata = "";
+    	// String swapdata = "";
+    	        	 
+    	 IntWritable one= new IntWritable();;
+    	 //swapdata=matcher.group(1).toString(); 
+    	 outdata = "status="+g06.exchange(splitsym)+"	ctype="+g07.exchange(splitsym);
+         if(g06.exchange(splitsym).toString().indexOf("error_data")==-1 && g05.exchange(splitsym).toString().equals("0")) {
+    		 String aa="fail";
+    		 try {
+    			 aa = changehash.exchange();
+    			 } catch (Exception e) {
+	// TODO Auto-generated catch block
+    				 e.printStackTrace();
+    				 }                
+    		 wordK.set(aa+"	"+g07.exchange(splitsym).toString()+"	"+g02.exchange(splitsym).toString()+"	"+g03.exchange(splitsym).toString());
+    		 //wordV.set(g06.exchange(splitsym).toString());
+    		 one.set(Integer.valueOf(g06.exchange(splitsym).toString()));
+    		 context.write(wordK, one);
+         }else{
+         }
+    	//System.out.println("error");
+    }
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;mydlnk_data_by_time/src/turn_logloginaccount&apos;&#x0A;- Original project: &apos;mydlnk_data_by_time&apos;&#x0A;- Destination element: &apos;mydlnk_data_by_time/src/turn_logloginaccount&apos;&#x0A;- Original elements:&#x0A;     ddd_mining_ctype.Cutstr.java&#x0A;     ddd_mining_ctype.Build_hash.java" description="Copy compilation units" destination="/src&lt;turn_logloginaccount" element1="/src&lt;ddd_mining_ctype{Cutstr.java" element2="/src&lt;ddd_mining_ctype{Build_hash.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1419408799648" units="2" version="1.0"/>
+</session>

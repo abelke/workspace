@@ -1,0 +1,41 @@
+package mydlinkddd;
+
+public class Cutstr {
+	
+    String input;
+    String find;
+    String result;
+    Cutstr(String input2, String find) {
+        this.input = input2;
+        this.find =find;
+           }
+    
+    String exchange(String splitchar) {  // 兌換紅利點數時呼叫的方法
+        int finstart = input.indexOf(find);
+        String splitstart = "=";
+        int cutfromsym = input.indexOf(splitstart, finstart);
+        int cutendsym = input.indexOf(splitchar, finstart);
+        String mydlinklite = "mydlink";
+        
+    	if (finstart != -1 && cutfromsym >=0 && cutendsym >=0) {
+    		//input.indexOf(splitchar, input.indexOf(find));
+    		
+    		result = input.substring(cutfromsym, cutendsym);
+    		if(result.length() != 0)
+    			if(result.equals(mydlinklite)){
+    				result = input.substring(input.indexOf(splitstart, finstart)+1, input.indexOf(",", finstart));
+    				return result;
+    				}else{
+    					return result;
+    					}
+    		else{
+    			result="error_data";
+    			return result;
+    		}
+    	}else{
+    		this.result = "error";
+    		return result;
+    	}
+    		
+    }
+}

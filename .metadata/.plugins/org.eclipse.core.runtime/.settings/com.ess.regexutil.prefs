@@ -1,0 +1,4 @@
+defaultRegex="^([\\\\d.]+) (\\\\S+) (\\\\S+)"+ " \\\\[([\\\\w\:/]+\\\\s[+\\\\-]\\\\d{4})\\\\] \\"(\\\\w+) (.+?)
+defaultText=229.48.154.221 - - [04/Jul/2012\:07\:03\:14 +0000] "GET /index.html HTTP/1.1" 200 140 "http\://www.notarealpage.com" "Mozilla/5.0 (compatible; somebot/9.1; +http\://www.somebot.com/robots.html)"
+eclipse.preferences.version=1
+saved=true

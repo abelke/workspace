@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;test.java&apos; to &apos;hadooptest/src/mydlinktest&apos;&#x0A;- Original project: &apos;hadooptest&apos;&#x0A;- Destination element: &apos;hadooptest/src/mydlinktest&apos;&#x0A;- Original element: &apos;mydlinktime.test.java&apos;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="/src&lt;mydlinktest" element1="/src&lt;mydlinktime{test.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1404353375228" units="1" version="1.0"/>
+</session>

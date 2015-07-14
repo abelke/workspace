@@ -1,0 +1,34 @@
+package ddd_mining_connect_success;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+
+public class Ddd_connect_reducer extends Reducer<Text, IntWritable, Text, Text> {
+ // private Text result = new Text();
+  private IntWritable result = new IntWritable();
+  public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+	  int sum = 0;
+	  for (IntWritable val : values) {
+          sum += val.get();
+        }
+        result.set(sum);
+        context.write(key, result);
+    //int sum = 0; // initialize the sum for each keyword
+	 // if(value.toString().indexOf("status=1")!=-1){
+	/*  System.out.println(key);
+		  result.set("error");
+		  context.write(key, result); // create a pair <keyword, number of occurences>
+		  System.out.println("***************************");
+		  //context.write(key, value); // create a pair <keyword, number of occurences>
+		/*  }else{
+			  Text outstr= new Text();
+			  outstr.set("error");
+			  context.write(key, outstr); // create a pair <keyword, number of occurences>
+		  }*/
+    
+  }
+	}
